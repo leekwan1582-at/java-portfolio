@@ -1,0 +1,33 @@
+---
+references:
+  - "File: /src/MovingAverageStrategy.java"
+generationTime: 2026-10-15T15:04:32.961Z
+---
+classDiagram
+    class TradingStrategy {
+        <<abstract>>
+        +String name
+        +TradingStrategy(String name)
+        +executeTrade(HistoricalData data)* Trade
+    }
+
+    class MovingAverageStrategy {
+        -double thresholdPrice
+        +MovingAverageStrategy(double thresholdPrice)
+        +executeTrade(HistoricalData data) Trade
+    }
+
+    class HistoricalData {
+        +double getClosePrice()
+    }
+
+    class Trade {
+        +String symbol
+        +double price
+        +boolean isBuy
+        +Trade(String symbol, double price, boolean isBuy)
+    }
+
+    TradingStrategy <|-- MovingAverageStrategy : inherits
+    MovingAverageStrategy ..> HistoricalData : uses
+    MovingAverageStrategy ..> Trade : creates
