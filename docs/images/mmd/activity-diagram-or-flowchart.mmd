@@ -1,0 +1,50 @@
+%%{init: {
+  'flowchart': {
+    'nodeSpacing': 15,
+    'rankSpacing': 20,
+    'padding': 5,
+    'curve': 'basis'
+  }
+}}%%
+
+flowchart LR
+
+    %% Phase 1: Data Ingestion
+    Start(["Start Engine"]) --> Load["Load CSV & Filter"]
+    Load --> ReadRow{"Read Row?"}
+    ReadRow -- No --> End(["End & Summary"])
+
+    %% Phase 2: Validation & Queue
+    ReadRow -- Yes --> CheckDate{"In Range?"}
+    CheckDate -- Yes --> ParseData["Parse History"]
+    ParseData --> PassStrategy["executeTrade"]
+    PassStrategy --> AddQueue["Add to Window"]
+    AddQueue --> CheckSize{"Size < Period?"}
+
+    %% Phase 3: Signal Execution
+    CheckSize -- No --> CalcMA["Calculate MA"]
+    CalcMA --> Condition{"Price > MA * 1.01?"}
+    Condition -- Yes --> GenBuy["Trade: Buy"]
+    Condition -- No --> CheckSell{"Price < MA?"}
+    CheckSell -- Yes --> GenSell["Trade: Sell"]
+
+    GenBuy --> PrintTrade["Print & Count"]
+    GenSell --> PrintTrade
+
+    %% Loop connections
+    CheckDate -- No --> ReadRow
+    CheckSize -- Yes --> ReadRow
+    CheckSell -- No --> ReadRow
+    PrintTrade --> ReadRow
+
+    %% Styling
+    classDef startEnd fill:#d9ead3,stroke:#38761d,color:#000
+    classDef decision fill:#fff2cc,stroke:#bf9000,color:#000
+    classDef process fill:#d9eaf7,stroke:#3d85c6,color:#000
+    classDef trade fill:#f4cccc,stroke:#cc0000,color:#000
+
+    class Start,End startEnd
+    class ReadRow,CheckDate,CheckSize,Condition,CheckSell decision
+    class Load,ParseData,PassStrategy,AddQueue,CalcMA,PrintTrade process
+    class GenBuy,GenSell trade
+

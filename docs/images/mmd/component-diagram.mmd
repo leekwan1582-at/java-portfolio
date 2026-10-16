@@ -1,0 +1,41 @@
+graph LR
+    subgraph ExternalSystemStorage["External System / Storage"]
+        CSV[(Historical CSV Files <br/> e.g., AAPL_historical.csv)]
+    end
+
+    subgraph JavaAppArchitecture["Java Application Architecture (Trading Backtesting Engine)"]
+        direction TB
+        
+        subgraph UIExecutionLayer["UI / Execution Layer"]
+            Main[BacktestEngine / Main Class <br/> Entry Point & Config]
+        end
+
+        subgraph CoreBusinessLogicLayer["Core Business Logic Layer"]
+            Engine[BacktestEngine Logic <br/> Date Filtering & File I/O]
+            StrategyInterface["abstract<br/>TradingStrategy"]
+            
+            subgraph ConcreteStrategies["Concrete Strategies"]
+                MA[MovingAverageStrategy]
+                RSI[RSIStrategy]
+                MACD[MACDStrategy]
+            end
+        end
+
+        subgraph DomainModelLayer["Domain Model Layer"]
+            Data[HistoricalData Class]
+            Trade[Trade Class]
+        end
+    end
+
+    %% Dependencies and Connections
+    CSV -.->|Reads raw text stream| Engine
+    Main -->|Configures & triggers| Engine
+    Engine -->|Delegates strategy evaluation| StrategyInterface
+    
+    MA --> StrategyInterface
+    RSI --> StrategyInterface
+    MACD --> StrategyInterface
+    
+    Engine -->|Instantiates & passes data| Data
+    StrategyInterface -->|Evaluates data and returns| Trade
+    Engine -->|Receives & logs signals| Trade

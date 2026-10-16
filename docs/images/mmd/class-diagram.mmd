@@ -1,0 +1,102 @@
+---
+id: 8b21add7-8721-4d5c-9b8c-4f1d8060e518
+---
+%%{init: {'themeVariables': { 'fontSize': '15px' }}}%%
+%%{init: { 'themeCss': '.classGroup text, .label text { font-weight: bold !important; }' }}%%
+
+classDiagram
+    direction TB
+
+    class TradingStrategy {
+        <<abstract>>
+        #String strategyName
+        +TradingStrategy(String name)
+        +getName() String
+        +executeTrade(HistoricalData data)* Trade
+        +reset() void
+    }
+
+    class MovingAverageStrategy {
+        -int period
+        -Queue~Double~ priceWindow
+        +MovingAverageStrategy(int period)
+        +executeTrade(HistoricalData data) Trade
+        +reset() void
+    }
+
+    class RSIStrategy {
+        -int period
+        -Queue~Double~ priceWindow
+        -double previousClose
+        +RSIStrategy(int period)
+        +executeTrade(HistoricalData data) Trade
+        +reset() void
+    }
+
+    class MACDStrategy {
+        -List~Double~ priceHistory
+        -double fastEMA
+        -double slowEMA
+        -double signalEMA
+        -double kFast
+        -double kSlow
+        -double kSignal
+        -boolean isInitialized
+        +MACDStrategy()
+        +executeTrade(HistoricalData data) Trade
+        -calculateInitialSMA(List~Double~ list, int period) double
+        +reset() void
+    }
+
+    class BacktestEngine {
+        -TradingStrategy strategy
+        -String dataCsv
+        -String startDate
+        -String endDate
+        +BacktestEngine(TradingStrategy strategy, String dataCsv, String startDate, String endDate)
+        +BacktestEngine(TradingStrategy strategy, String startDate, String endDate)
+        +getStrategy() TradingStrategy
+        +setStrategy(TradingStrategy strategy) void
+        +getDataCsv() String
+        +setDataCsv(String dataCsv) void
+        +getStartDate() String
+        +setStartDate(String startDate) void
+        +getEndDate() String
+        +setEndDate(String endDate) void
+        +toString() String
+        +runBacktest() void
+        +runSingleTest(TradingStrategy strategy, String csvPath, String start, String end)$ void
+        +main(String[] args)$ void
+    }
+
+    class Trade {
+        -String ticker
+        -double executionPrice
+        -boolean isBuy
+        +Trade(String ticker, double executionPrice, boolean isBuy)
+        +printTradeDetails() void
+    }
+
+    class HistoricalData {
+        -String date
+        -double closePrice
+        +HistoricalData(String date, double closePrice)
+        +getDate() String
+        +getClosePrice() double
+    }
+
+    %% Relationships
+    MovingAverageStrategy --|> TradingStrategy : inherits
+    RSIStrategy --|> TradingStrategy : inherits
+    MACDStrategy --|> TradingStrategy : inherits
+    
+    BacktestEngine *-- TradingStrategy : composition
+    
+    MovingAverageStrategy ..> HistoricalData : depends
+    MovingAverageStrategy ..> Trade : depends
+    RSIStrategy ..> HistoricalData : depends
+    RSIStrategy ..> Trade : depends
+    MACDStrategy ..> HistoricalData : depends
+    MACDStrategy ..> Trade : depends
+    TradingStrategy ..> HistoricalData : depends
+    TradingStrategy ..> Trade : depends

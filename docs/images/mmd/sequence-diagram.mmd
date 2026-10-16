@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Engine as BacktestEngine
+    participant File as BufferedReader (CSV)
+    participant Strategy as TradingStrategy (MA/RSI)
+    participant TradeObj as Trade
+
+    User->>Engine: runBacktest()
+    activate Engine
+    Engine->>File: Read line from CSV
+    File-->>Engine: Return row data (Date, Close)
+    
+    loop For each valid row
+        Engine->>Strategy: executeTrade(HistoricalData)
+        activate Strategy
+        Strategy-->>Engine: Return Trade object (or null)
+        deactivate Strategy
+        
+        alt If Trade != null
+            Engine->>TradeObj: printTradeDetails()
+            TradeObj-->>Engine: Output console log
+        end
+    end
+    
+    Engine-->>User: Backtest complete
+    deactivate Engine
