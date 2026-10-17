@@ -1,0 +1,55 @@
+%%{init: {'themeVariables': { 'fontSize': '17px' }}}%%
+%%{init: { 'themeCss': '.classGroup text, .label text { font-weight: bold !important; }' }}%%
+classDiagram
+    direction TB
+    class TradingStrategy {
+        <<abstract>>
+        #String strategyName
+        +TradingStrategy(String name)
+        +getName() String
+        +executeTrade(HistoricalData data)* Trade
+        +reset() void
+    }
+    class MovingAverageStrategy {
+        -int period
+        -Queue~Double~ priceWindow
+        +MovingAverageStrategy(int period)
+        +executeTrade(HistoricalData data) Trade
+        +reset() void
+    }
+    class RSIStrategy {
+        -int period
+        -Queue~Double~ priceWindow
+        -double previousClose
+        +RSIStrategy(int period)
+        +executeTrade(HistoricalData data) Trade
+        +reset() void
+    }
+    class MACDStrategy {
+        -List~Double~ priceHistory
+        -double fastEMA
+        -double slowEMA
+        -double signalEMA
+        -double kFast
+        -double kSlow
+        -double kSignal
+        -boolean isInitialized
+        +MACDStrategy()
+        +executeTrade(HistoricalData data) Trade
+        -calculateInitialSMA(List~Double~ list, int period) double
+        +reset() void
+    }
+    %% Relationships
+    MovingAverageStrategy --|> TradingStrategy : inherits
+    RSIStrategy --|> TradingStrategy : inherits
+    MACDStrategy --|> TradingStrategy : inherits
+
+    %% Dependencies (Trade & HistoricalData detailed on Page 1)
+    MovingAverageStrategy ..> Trade : depends
+    MovingAverageStrategy ..> HistoricalData : depends
+    RSIStrategy ..> Trade : depends
+    RSIStrategy ..> HistoricalData : depends
+    MACDStrategy ..> Trade : depends
+    MACDStrategy ..> HistoricalData : depends
+    TradingStrategy ..> Trade : depends
+    TradingStrategy ..> HistoricalData : depends

@@ -1,0 +1,21 @@
+%%{init: {'themeVariables': { 'fontSize': '17px' }}}%%
+%%{init: { 'themeCss': '.classGroup text, .label text { font-weight: bold !important; }' }}%%
+classDiagram
+    direction TB
+    class Trade {
+        -String ticker
+        -double executionPrice
+        -boolean isBuy
+        +Trade(String ticker, double executionPrice, boolean isBuy)
+        +printTradeDetails() void
+    }
+    class HistoricalData {
+        -String date
+        -double closePrice
+        +HistoricalData(String date, double closePrice)
+        +getDate() String
+        +getClosePrice() double
+    }
+    %% Cross-page reference:
+    %% Used by TradingStrategy, MovingAverageStrategy,
+    %% RSIStrategy, MACDStrategy (see Page 2)

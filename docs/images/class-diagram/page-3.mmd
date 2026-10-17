@@ -1,0 +1,26 @@
+%%{init: {'themeVariables': { 'fontSize': '16px' }}}%%
+%%{init: { 'themeCss': '.classGroup text, .label text { font-weight: bold !important; }' }}%%
+classDiagram
+    direction TB
+    class BacktestEngine {
+        -TradingStrategy strategy
+        -String dataCsv
+        -String startDate
+        -String endDate
+        +BacktestEngine(TradingStrategy strategy, String dataCsv, String startDate, String endDate)
+        +BacktestEngine(TradingStrategy strategy, String startDate, String endDate)
+        +getStrategy() TradingStrategy
+        +setStrategy(TradingStrategy strategy) void
+        +getDataCsv() String
+        +setDataCsv(String dataCsv) void
+        +getStartDate() String
+        +setStartDate(String startDate) void
+        +getEndDate() String
+        +setEndDate(String endDate) void
+        +toString() String
+        +runBacktest() void
+        +runSingleTest(TradingStrategy strategy, String csvPath, String start, String end)$ void
+        +main(String[] args)$ void
+    }
+    %% Composition (TradingStrategy detailed on Page 2)
+    BacktestEngine *-- TradingStrategy : composition
