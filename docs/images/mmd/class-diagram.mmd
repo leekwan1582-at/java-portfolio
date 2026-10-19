@@ -1,9 +1,3 @@
----
-id: 8b21add7-8721-4d5c-9b8c-4f1d8060e518
----
-%%{init: {'themeVariables': { 'fontSize': '15px' }}}%%
-%%{init: { 'themeCss': '.classGroup text, .label text { font-weight: bold !important; }' }}%%
-
 classDiagram
     direction TB
 
@@ -85,18 +79,20 @@ classDiagram
         +getClosePrice() double
     }
 
-    %% Relationships
-    MovingAverageStrategy --|> TradingStrategy : inherits
-    RSIStrategy --|> TradingStrategy : inherits
-    MACDStrategy --|> TradingStrategy : inherits
+    %% Inheritance Relationships (Generalization)
+    MovingAverageStrategy --|> TradingStrategy : extends
+    RSIStrategy --|> TradingStrategy : extends
+    MACDStrategy --|> TradingStrategy : extends
     
-    BacktestEngine *-- TradingStrategy : composition
+    %% Association / Composition
+    BacktestEngine ..> TradingStrategy
     
-    MovingAverageStrategy ..> HistoricalData : depends
-    MovingAverageStrategy ..> Trade : depends
-    RSIStrategy ..> HistoricalData : depends
-    RSIStrategy ..> Trade : depends
-    MACDStrategy ..> HistoricalData : depends
-    MACDStrategy ..> Trade : depends
-    TradingStrategy ..> HistoricalData : depends
-    TradingStrategy ..> Trade : depends
+    %% Dependencies
+    MovingAverageStrategy ..> HistoricalData
+    MovingAverageStrategy ..> Trade
+    RSIStrategy ..> HistoricalData
+    RSIStrategy ..> Trade
+    MACDStrategy ..> HistoricalData
+    MACDStrategy ..> Trade
+    BacktestEngine ..> HistoricalData
+    BacktestEngine ..> Trade

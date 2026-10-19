@@ -1,0 +1,29 @@
+classDiagram
+    direction LR
+
+    class engine {
+        dataCsv = "data/AAPL.csv"
+        startDate = "2023-01-01"
+        endDate = "2023-06-30"
+    }
+
+    class maStrategy {
+        strategyName = "Moving Average Breakout (20-Day)"
+        period = 20
+    }
+
+    class dailyData {
+        date = "2023-04-15"
+        closePrice = 165.25
+    }
+
+    class executedTrade {
+        ticker = "AAPL"
+        executionPrice = 165.25
+        isBuy = true
+    }
+
+    %% Object runtime relationships / associations matching reference styling
+    engine -- maStrategy
+    engine -- dailyData
+    maStrategy -- executedTrade
